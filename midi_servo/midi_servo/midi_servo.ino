@@ -5,6 +5,7 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 
 Servo myservo;
 const int SV_PIN = 6;
+const int STOP = 90;
 
 // -----------------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
 void handleNoteOff(byte channel, byte pitch, byte velocity) {
     // Do something when the note is released.
     // Note that NoteOn messages with 0 velocity are interpreted as NoteOffs.
-    myservo.write(90);
+    myservo.write(STOP);
 }
 
 // -----------------------------------------------------------------------------
@@ -38,6 +39,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(SV_PIN, OUTPUT);
   myservo.attach(SV_PIN, 500, 2400);
+  myservo.write(STOP);
 
   Serial.begin(9600);
     // Connect the handleNoteOn function to the library,
