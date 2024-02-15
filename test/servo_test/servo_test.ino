@@ -5,7 +5,9 @@ const int SV_PIN = 6;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(SV_PIN, OUTPUT);
   myservo.attach(SV_PIN, 500, 2400);
+  // myservo.write(180);
 }
 
 void loop() {
