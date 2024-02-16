@@ -3,8 +3,11 @@
 
 MIDI_CREATE_DEFAULT_INSTANCE();
 
-Servo myservo;
-const int SV_PIN = 6;
+Servo servo0;
+Servo servo1;
+Servo servo2;
+Servo servos[] = { servo0, servo1, servo2 };
+const int servo_pins[] = { 6, 9, 10 };
 const int STOP = 90;
 
 // -----------------------------------------------------------------------------
@@ -23,23 +26,36 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
     char buff[255];
     sprintf(buff, "channel = %d, pitch = %d, velocity = %d", channel, pitch, velocity);
     Serial.println(buff);
-    int v = map(velocity, 0, 127, 0, 180);
-    myservo.write(v);
+    int s = pitch - 60;
+    if (s >= 0 && s < 3) {
+      if (velocity > 0) {
+        int v = map(velocity, 1, 127, 0, 180);
+        servos[s].write(v);
+      }
+    }
 }
 
 void handleNoteOff(byte channel, byte pitch, byte velocity) {
     // Do something when the note is released.
     // Note that NoteOn messages with 0 velocity are interpreted as NoteOffs.
-    myservo.write(STOP);
+    char buff[255];
+    sprintf(buff, "channel = %d, pitch = %d, velocity = %d", channel, pitch, velocity);
+    Serial.println(buff);
+    int s = pitch - 60;
+    if (s >= 0 && s < 3) {
+      servos[s].write(STOP);
+    }
 }
 
 // -----------------------------------------------------------------------------
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(SV_PIN, OUTPUT);
-  myservo.attach(SV_PIN, 500, 2400);
-  myservo.write(STOP);
+  for (int i = 0; i < 3; ++i) {
+    pinMode(servo_pins[i], OUTPUT);
+    servos[i].attach(servo_pins[i], 500, 2400);
+    servos[i].write(STOP);
+  }
 
   Serial.begin(9600);
     // Connect the handleNoteOn function to the library,
@@ -53,8 +69,7 @@ void setup() {
     MIDI.begin(MIDI_CHANNEL_OMNI);
 }
 
-void loop()
-{
+void loop() {
     // Call MIDI.read the fastest you can for real-time performance.
     MIDI.read();
 
