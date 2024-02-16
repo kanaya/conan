@@ -32,6 +32,9 @@ void handleNoteOn(byte channel, byte pitch, byte velocity) {
         int v = map(velocity, 1, 127, 0, 180);
         servos[s].write(v);
       }
+      else {
+        servos[s].write(STOP);
+      }
     }
 }
 
